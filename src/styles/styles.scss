@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css?family=Russo+One&display=swap');
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    background: rgb(72, 134, 136);
+}
+
+#clock {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: 3rem;
+    text-align: center;
+    font-family: 'Russo One', sans-serif;
+    user-select: none;
+}
+
+#clock-title {
+    font-size: 5rem;
+}
+
+#modifiers {
+    display: flex;
+    justify-content: space-around;
+}
+
+.length-modifier {
+    margin: 0 1rem;
+}
+
+#break-label, #session-label {
+    font-size: 2rem;
+    padding: 0 0 2rem;
+}
+
+.modifier-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#break-length, #session-length {
+    padding: 0 1rem;
+    font-size: 2.5rem;
+}
+
+.fa-arrow-up, .fa-arrow-down {
+    cursor: pointer;
+}
+
+#timer-display {
+    font-size: 3rem;
+    padding: 2rem;
+    border: 3px solid;
+    border-radius: 20%;
+    width: 20rem;
+    margin: 2rem auto;
+}
+
+#timer-label {
+    padding-bottom: 2rem;
+    font-size: 3rem;
+}
+
+#time-left {
+    font-size: 7rem;
+}
+
+#timer-controls {
+    display: flex;
+    justify-content: space-evenly;
+    width: 10rem;
+    margin: auto;
+}
+
+#start_stop, #reset {
+    cursor: pointer;
+}
