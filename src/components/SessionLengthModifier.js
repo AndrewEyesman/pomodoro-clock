@@ -8,14 +8,14 @@ export default (props) => (
         <div className="modifier-controls">
             <div 
                 id="session-decrement"
-                onClick={() => props.handleSessionLength('dec')}
+                onClick={props.isActive ? null : () => props.handleSessionLength('dec')}
             >
                 <FontAwesomeIcon icon={faArrowDown} />
             </div>
             <div id="session-length">{props.lengthValue}</div>
             <div 
                 id="session-increment"
-                onClick={() => props.handleSessionLength('inc')}
+                onClick={props.isActive ? null : () => props.handleSessionLength('inc')}
             >
                 <FontAwesomeIcon icon={faArrowUp} />
             </div>

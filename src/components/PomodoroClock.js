@@ -15,52 +15,79 @@ export default class PomodoroClock extends React.Component {
             timerSeconds: '00',
             currentSeconds: 0,
             breakCycle: false,
-            isActive: true
+            isActive: false,
+            currentCycle: 'Session'
         }
     }
 
     handleBreakLength = (value) => {
         const breakLength = this.state.breakLength
-        const timerMinutes = this.state.timerMinutes
 
-        if (value === 'dec') {
+        if (value === 'dec') {``
             if (breakLength === 1) return
 
-            return this.setState(() => ({
-                breakLength: breakLength - 1,
-            }))
+            if (this.state.breakCycle) {
+                return this.setState(() => ({
+                    breakLength: breakLength - 1,
+                    timerMinutes: (breakLength - 1).toString().length < 2 ? '0' + (breakLength - 1).toString() : (breakLength - 1).toString()
+                }))
+            } else {
+                return this.setState(() => ({
+                    breakLength: breakLength - 1
+                }))
+            }
+            
         }
 
         if (value === 'inc') {
             if (breakLength === 60) return
 
-            return this.setState(() => ({
-                breakLength: breakLength + 1,
-            }))
+            if (this.state.breakCycle) {
+                return this.setState(() => ({
+                    breakLength: breakLength + 1,
+                    timerMinutes: (breakLength + 1).toString().length < 2 ? '0' + (breakLength + 1).toString() : (breakLength + 1).toString()
+                }))
+            } else {
+                return this.setState(() => ({
+                    breakLength: breakLength + 1
+                }))
+            }
         }
-        
     }
 
     handleSessionLength = (value) => {
         const sessionLength = this.state.sessionLength
-        const timerMinutes = this.state.timerMinutes
 
         if (value === 'dec') {
             if (sessionLength === 1) return
 
-            return this.setState(() => ({
-                sessionLength: sessionLength - 1,
-                timerMinutes: timerMinutes - 1
-            }))
+            if (!this.state.breakCycle) {
+                return this.setState(() => ({
+                    sessionLength: sessionLength - 1,
+                    timerMinutes: (sessionLength - 1).toString().length < 2 ? '0' + (sessionLength - 1).toString() : (sessionLength - 1).toString()
+                }))
+            } else {
+                return this.setState(() => ({
+                    sessionLength: sessionLength - 1
+                }))
+            }
+            
         }
 
         if (value === 'inc') {
             if (sessionLength === 60) return
 
-            return this.setState(() => ({
-                sessionLength: sessionLength + 1,
-                timerMinutes: parseInt(timerMinutes) + 1
-            }))
+            if (!this.state.breakCycle) {
+                return this.setState(() => ({
+                    sessionLength: sessionLength + 1,
+                    timerMinutes: (sessionLength + 1).toString().length < 2 ? '0' + (sessionLength + 1).toString() : (sessionLength + 1).toString()
+                }))
+            } else {
+                return this.setState(() => ({
+                    sessionLength: sessionLength + 1
+                }))
+            }
+            
         }
     }
     // ********************************
@@ -70,13 +97,22 @@ export default class PomodoroClock extends React.Component {
         const currentSeconds = this.state.currentSeconds
         const timerMinutes = this.state.timerMinutes
 
-        // Should recieve false when stop function is called, does nothing.
-        if (!action) return
+        if (action === 'start' && this.state.isActive) {
+            return this.setState(() => ({ isActive: false }))
+        } else if (action === 'start' && !this.state.isActive) {
+            this.setState(() => ({ isActive: true }))
+        }
+
+        if (!action) {
+            return this.setState(() => ({ isActive: false }))
+        }
 
         setTimeout(() => {
+            if (!this.state.isActive) return
+
             if (!currentSeconds && !parseInt(timerMinutes)) {
                 return this.formatTimer(), 
-                this.handleBreakTimer()
+                       this.handleBreakTimer()
             }
     
             if (currentSeconds === 0) {
@@ -107,18 +143,25 @@ export default class PomodoroClock extends React.Component {
                 currentSeconds: 59,
                 timerSeconds: '59',
                 timerMinutes: (this.state.sessionLength- 1).toString(),
-                breakCycle: false
+                breakCycle: false,
+                currentCycle: 'Session'
             })), this.forceUpdate(() => {
                 this.formatTimer()
                 this.handleStartTimer()
             })
         }
 
+        const audio = document.getElementById('beep')
+
+        audio.load()
+        audio.play()
+
         return this.setState(() => ({
             currentSeconds: 59,
             timerSeconds: '59',
             timerMinutes: (this.state.breakLength - 1).toString(),
-            breakCycle: true
+            breakCycle: true,
+            currentCycle: 'Break'
         })), this.forceUpdate(() => {
             this.formatTimer()
             this.handleStartTimer()
@@ -145,9 +188,9 @@ export default class PomodoroClock extends React.Component {
             timerSeconds: '00',
             currentSeconds: 0,
             breakCycle: false,
-            isActive: false
+            isActive: false,
+            currentCycle: 'Session'
         })), this.forceUpdate(() => this.handleStartTimer(false))
-        // Calls start timer function with value of false
     }
 
     render() {
@@ -156,17 +199,21 @@ export default class PomodoroClock extends React.Component {
                 <h1 id="clock-title">Pomodoro Clock</h1>
                 <div id="modifiers">
                     <BreakLengthModifier
+                        isActive={this.state.isActive}
                         lengthValue={this.state.breakLength}
                         handleBreakLength={this.handleBreakLength}
                     />
                     <SessionLengthModifier
+                        isActive={this.state.isActive}
                         lengthValue={this.state.sessionLength}
                         handleSessionLength={this.handleSessionLength}
                     />
                 </div>
                 <TimerDisplay 
+                    currentCycle={this.state.currentCycle}
                     timerMinutes={this.state.timerMinutes}
                     timerSeconds={this.state.timerSeconds}
+                    
                 />
                 <TimerControls 
                     handleStartTimer={this.handleStartTimer}

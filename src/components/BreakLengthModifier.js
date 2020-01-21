@@ -8,14 +8,14 @@ export default (props) => (
         <div className="modifier-controls">
             <div 
                 id="break-decrement"
-                onClick={() => props.handleBreakLength('dec')}
+                onClick={props.isActive ? null : () => props.handleBreakLength('dec')}
             >
                 <FontAwesomeIcon icon={faArrowDown} />
             </div>
             <div id="break-length">{props.lengthValue}</div>
             <div 
                 id="break-increment"
-                onClick={() => props.handleBreakLength('inc')}
+                onClick={props.isActive ? null : () => props.handleBreakLength('inc')}
             >
                 <FontAwesomeIcon icon={faArrowUp} />
             </div>

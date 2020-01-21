@@ -6,7 +6,7 @@ export default (props) => (
     <div id="timer-controls">
         <div 
             id="start_stop"
-            onClick={() => props.handleStartTimer(true)}
+            onClick={() => props.handleStartTimer('start')}
         >
             <FontAwesomeIcon icon={faPlay} /></div>
         <div 
